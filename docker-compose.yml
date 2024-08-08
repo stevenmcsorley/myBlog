@@ -55,11 +55,11 @@ services:
     build: ./mongodb_rs
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE=blogdb
-      - MONGO_REPLICA_HOST=mongo
-      - MONGO_REPLICA_PORT=27017
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: blogdb
+      MONGO_REPLICA_HOST: mongo
+      MONGO_REPLICA_PORT: 27017
     ports:
       - "27017:27017"
     networks:
