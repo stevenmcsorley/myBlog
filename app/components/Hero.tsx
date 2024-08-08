@@ -1,22 +1,11 @@
 import { Link } from "@remix-run/react";
-import { useEffect, useState } from "react";
 
 export default function Hero() {
-  const [imageUrl, setImageUrl] = useState("");
-
-  useEffect(() => {
-    // Generate a random image ID between 1 and 1000
-    const randomId = Math.floor(Math.random() * 1000) + 1;
-    setImageUrl(`https://picsum.photos/id/${randomId}/1920/1080`);
-  }, []);
-
   return (
     <div
       className="hero min-h-screen"
       style={{
-        backgroundImage: `url(${imageUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundColor: "#3498db", // Replace with your desired color
       }}
     >
       <div className="hero-overlay bg-opacity-60"></div>
