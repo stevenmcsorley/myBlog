@@ -5,7 +5,7 @@ export default function Hero() {
     <div
       className="hero min-h-screen"
       style={{
-        backgroundColor: "#3498db", // Replace with your desired color
+        backgroundColor: "black",
       }}
     >
       <div className="hero-overlay bg-opacity-60"></div>
