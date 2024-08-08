@@ -55,11 +55,11 @@ jobs:
             ls -la
 
             echo "Pulling the latest Docker images..."
-            docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml pull
+            docker-compose -f root/blog/docker-compose.yml pull
 
             echo "Rebuilding and restarting Docker containers..."
-            docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml down --remove-orphans
-            docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml up --build -d --remove-orphans
+            docker-compose -f root/blog/docker-compose.yml down --remove-orphans
+            docker-compose -f root/blog/docker-compose.yml up --build -d --remove-orphans
 
             echo "Cleaning up Docker system..."
             docker system prune -f
