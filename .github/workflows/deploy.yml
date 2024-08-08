@@ -44,20 +44,6 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
-          script: |
-            echo "Navigating to project directory..."
-            cd ${{ secrets.VPS_PATH }}
-
-            echo "Pulling the latest Docker images..."
-            docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml pull
-
-            echo "Rebuilding and restarting Docker containers..."
-            docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml down --remove-orphans
-            docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml up --build -d --remove-orphans
-
-            echo "Cleaning up Docker system..."
-            docker system prune -f
-            docker image prune -f
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
@@ -66,3 +52,23 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
           MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+        script: |
+          echo "Navigating to project directory..."
+          cd ${{ secrets.VPS_PATH }}
+
+          echo "Current directory:"
+          pwd
+
+          echo "Listing contents:"
+          ls -la
+
+          echo "Pulling the latest Docker images..."
+          docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml pull
+
+          echo "Rebuilding and restarting Docker containers..."
+          docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml down --remove-orphans
+          docker-compose -f ${{ secrets.VPS_PATH }}/docker-compose.yml up --build -d --remove-orphans
+
+          echo "Cleaning up Docker system..."
+          docker system prune -f
+          docker image prune -f
