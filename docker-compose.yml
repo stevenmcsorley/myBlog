@@ -1,34 +1,77 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  traefik:
+    image: traefik:v2.0
+    restart: always
+    container_name: traefik
     ports:
-      - "3000:3000"
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    command:
+      - --api.insecure=false
+      - --api.dashboard=false
+      - --log.level=DEBUG
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.filename=/dynamic.yml
+      - --providers.docker.network=proxy
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dynamic.yml:/dynamic.yml
+    networks:
+      - proxy
+
+  app:
+    image: stevenmcsorley72/myblog-app:latest
+    ports:
+      - "5173:5173"
+      - "8002:8002"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=mongodb://mongo:27017/blogdb
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - DATABASE_URL
+      - SESSION_SECRET
+      - ADMIN_USERNAME
+      - ADMIN_PASSWORD
+      - GROQ_API_KEY
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - mongo
+    networks:
+      - default
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`steven.localhost`)"
+      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.routers.app-secure.entrypoints=websecure"
+      - "traefik.http.routers.app-secure.tls=true"
+      - "traefik.http.services.app.loadbalancer.server.port=5173"
 
   mongo:
     build: ./mongodb_rs
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: blogdb
-      MONGO_REPLICA_HOST: mongo
-      MONGO_REPLICA_PORT: 27017
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE=blogdb
+      - MONGO_REPLICA_HOST=mongo
+      - MONGO_REPLICA_PORT=27017
     ports:
       - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-volumes:
-  mongodb_data:
+networks:
+  proxy:
+    external: true
+  default:
+    driver: bridge

@@ -13,4 +13,11 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+    hmr: {
+      port: 8002, // Ensure this port is correctly set for HMR
+    },
+  },
 });
