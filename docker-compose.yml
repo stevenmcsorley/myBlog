@@ -45,7 +45,7 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`steven.localhost`)"
+      - "traefik.http.routers.app.rule=Host(`stevenmcsorley.co.uk`)"
       - "traefik.http.routers.app.entrypoints=web"
       - "traefik.http.routers.app-secure.entrypoints=websecure"
       - "traefik.http.routers.app-secure.tls=true"
