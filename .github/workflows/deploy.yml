@@ -46,7 +46,7 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             echo "Navigating to project directory..."
-            cd root/blog
+            cd /root/blog
 
             echo "Current directory:"
             pwd
@@ -54,12 +54,17 @@ jobs:
             echo "Listing contents:"
             ls -la
 
+            if [ ! -f /root/blog/docker-compose.yml ]; then
+              echo "docker-compose.yml not found in /root/blog"
+              exit 1
+            fi
+
             echo "Pulling the latest Docker images..."
-            docker-compose -f root/blog/docker-compose.yml pull
+            docker-compose -f /root/blog/docker-compose.yml pull
 
             echo "Rebuilding and restarting Docker containers..."
-            docker-compose -f root/blog/docker-compose.yml down --remove-orphans
-            docker-compose -f root/blog/docker-compose.yml up --build -d --remove-orphans
+            docker-compose -f /root/blog/docker-compose.yml down --remove-orphans
+            docker-compose -f /root/blog/docker-compose.yml up --build -d --remove-orphans
 
             echo "Cleaning up Docker system..."
             docker system prune -f
