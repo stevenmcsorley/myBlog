@@ -46,7 +46,7 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             echo "Navigating to project directory..."
-            cd ${{ secrets.VPS_PATH }}
+            cd root/blog
 
             echo "Current directory:"
             pwd
